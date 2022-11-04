@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace = "mem">
+ 	
+ 	<select id="list" resultType="part02.dto.MemDTO">
+ 		SELECT * FROM mem
+ 		ORDER BY num
+ 	</select>
+ 	
+ 	<insert id="memInsert" parameterType="part02.dto.MemDTO">
+ 		INSERT INTO mem(num, name, age, loc)
+ 		VALUES(mem_num_seq.nextval,#{name},#{age},#{loc}) <!-- #{} = MemDTO의 멤버변수 -->
+ 	</insert>
+ 	
+ 	<update id="memUpdate" parameterType="java.util.HashMap">
+ 		UPDATE mem SET name = #{name} WHERE num = #{num} <!-- key, value -->
+ 	</update>
+ 	
+ 	<delete id="memDelete" parameterType="int">
+ 		DELETE FROM mem WHERE age >= #{age} <!-- 되도록이면 컬럼명과 같게 -->
+ 	</delete>
+ </mapper>
