@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="per">
+ 	<select id="all" resultType="part04.dto.MemDTO">
+ 		SELECT * FROM mem ORDER BY num
+ 	</select>
+ 	
+ 	<select id="keyNum" resultType="java.lang.Integer" flushCache="true">
+ 		SELECT mem_num_seq.nextval
+ 		FROM dual
+ 	</select>
+ 	
+ 	<!-- 다중 insert -->
+ 	<!-- 
+ 		INSERT ALL 
+ 		INTO mem 생략가능(num, name, age, loc)
+ 		VALUES(1, '홍길동', 30, '서울')
+ 		
+ 		INTO mem 생략가능(num, name, age, loc)
+ 		VALUES(2, '유대리', 29, '경기')
+ 		
+ 		SELECT * FROM dual; - 가상의 테이블에 삽입
+ 		
+ 	 -->
+ 	 
+ 	 <insert id="multiIns" parameterType="java.util.List">
+ 	 	INSERT ALL
+ 	 	<foreach collection="list" item="element" index="no">
+ 	 	INTO mem
+ 		VALUES(#{element.num}, #{element.name}, #{element.age}, #{element.loc})
+ 	 	</foreach>
+ 	 	SELECT * FROM dual
+ 	 </insert>
+ 	 
+ 	 
+ 	 <!-- 다중 delete -->
+ 	 <delete id = "multiDel">
+ 	 	DELETE FROM mem
+ 	 	WHERE num IN(
+ 	 		<foreach collection="list" item="element" separator=",">
+ 	 			#{element}
+ 	 		</foreach>
+ 	 	)
+ 	 </delete>
+ 	 
+ 	  <delete id = "multiDel2">
+ 	 	DELET FROM mem
+ 	 	WHERE num IN(
+ 	 		<foreach collection="array" item="element" separator=",">
+ 	 			#{element}
+ 	 		</foreach>
+ 	 	)
+ 	 </delete>
+ 	 
+ 	 <!-- dynamic if -->
+ 	<select id="search" parameterType="part04.dto.MemDTO"
+ 		resultType="part04.dto.MemDTO">
+ 		SELECT * FROM mem
+ 		
+ 		<!--  
+ 		<where> 
+ 			<if test = "name != null">
+ 				name like '%' || #{name} || '%'
+ 			</if>
+ 			<if test="age != 0">
+ 				or age > #{age}
+ 			</if>
+ 		</where>
+ 		-->
+ 		
+ 		<trim prefix="where" suffixOverrides="or|and">
+ 			<if test = "name != null">
+ 				name like '%' || #{name} || '%' or
+ 			</if>
+ 			<if test="age != 0">
+ 				 age>#{age}
+ 			</if>
+ 		</trim>
+ 	</select>
+ 	
+ 	<!-- 다중 update -->
+ 	
+ 	<update id="multiUpt" parameterType="part04.dto.MemDTO">
+ 		UPDATE mem
+ 		<!--  
+ 		<set>
+ 			<if test="name != null">
+ 				name = #{name},
+ 			</if>
+ 			<if test="age != 0">
+ 				age = #{age},
+ 			</if>
+ 			<if test="loc != null">
+ 				loc = #{loc}
+ 			</if>
+ 		</set>
+ 		-->
+ 		<trim prefix="set" suffixOverrides=",">
+ 			<if test="name != null">
+ 				name = #{name},
+ 			</if>
+ 			<if test="age != 0">
+ 				age = #{age},
+ 			</if>
+ 			<if test="loc != null">
+ 				loc = #{loc}
+ 			</if>
+ 		</trim>
+ 		WHERE num = #{num}
+ 		
+ 	</update>
+ 	
+ 	<!-- choose 동적 SQL사용 -->
+ 	<insert id="insData" parameterType="part04.dto.MemDTO">
+ 		INSERT INTO mem VALUES(mem_num_seq.nextval, #{name}, #{age},
+ 		<choose>
+ 			<when test = "loc == null">
+ 				'test'
+ 			</when>
+ 			<otherwise>
+ 			#{loc}
+ 			</otherwise>
+ 		</choose>
+ 		)
+ 	</insert>	
+ </mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

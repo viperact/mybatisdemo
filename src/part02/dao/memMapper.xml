@@ -21,4 +21,24 @@
  	<delete id="memDelete" parameterType="int">
  		DELETE FROM mem WHERE age >= #{age} <!-- 되도록이면 컬럼명과 같게 -->
  	</delete>
+ 	
+ 	
+ 	
  </mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
